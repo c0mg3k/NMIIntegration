@@ -17,6 +17,9 @@ namespace NMIConnectionCSharp
         public string OrderId { get; private set; }
         public string Response_Code { get; private set; }
         public string Emv_Auth_Response_Data { get; set; }
+        public NMIResponse()
+        {
+        }
         public NMIResponse(string response, string responsetext, string authcode, string transactionid, string avsresponse, string cvvresponse, string orderid, string response_code, string emv_auth_response_data)
         {
             Response = int.Parse(response);

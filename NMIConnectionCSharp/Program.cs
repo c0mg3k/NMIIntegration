@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Runtime.CompilerServices;
+using System.Security.Permissions;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace NMIConnectionCSharp
@@ -40,8 +43,32 @@ namespace NMIConnectionCSharp
             {
                 request.ResponseString = sr.ReadToEnd();
             }
-            Console.WriteLine(request.ResponseString);
+            Console.WriteLine("raw response string: {0}", request.ResponseString);
+            Console.WriteLine("");
+            var items = ParseResponseString(request.ResponseString);
+            foreach(var item in items)
+            {
+                Console.WriteLine(item);
+            }
+
+            
             Console.ReadLine();
+        }
+        public static string[] ParseResponseString(string response)
+        {
+            var nmiresponse = new NMIResponse();
+            var items = response.Split('&');
+            foreach (var item in items)
+            {
+                var propname = DataHelper.GetNMIPropName(item);
+                switch (item)
+                {
+                    //TODO
+                    //case
+                }
+            }
+
+            return items;
         }
     }
 }
