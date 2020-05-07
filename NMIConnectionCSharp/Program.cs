@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Security.Permissions;
 using System.Text;
@@ -23,11 +24,17 @@ namespace NMIConnectionCSharp
             requestObj.ContentLength = request.RequestString.Length;
             requestObj.ContentType = "application/x-www-form-urlencoded";
             StreamWriter NMIWriter = new StreamWriter((requestObj.GetRequestStream()));
+            var resprops = GetObjProps<NMIResponse>();
+            foreach(var name in resprops)
+            {
+                Console.WriteLine(name.ToLower());
+            }
             try
             {
+
                 NMIWriter.Write(request.RequestString);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine("An exception has occured...  ");
                 Console.WriteLine("Exception Message : {0}", ex.Message);
@@ -45,13 +52,18 @@ namespace NMIConnectionCSharp
             }
             Console.WriteLine("raw response string: {0}", request.ResponseString);
             Console.WriteLine("");
+            Dictionary<string, string> responsekeyvals = new Dictionary<string, string>();
             var items = ParseResponseString(request.ResponseString);
-            foreach(var item in items)
+            foreach (var item in items)
             {
-                Console.WriteLine(item);
+                responsekeyvals.Add(DataHelper.GetNMIPropName(item), DataHelper.GetNMIPropValue(item));
             }
+            foreach(var keyval in responsekeyvals)
+            {
+                Console.WriteLine("Key: {0} Val: {1}", keyval.Key, keyval.Value);
+            }
+            var result = DataHelper.ResponseMapper(responsekeyvals);
 
-            
             Console.ReadLine();
         }
         public static string[] ParseResponseString(string response)
@@ -61,14 +73,28 @@ namespace NMIConnectionCSharp
             foreach (var item in items)
             {
                 var propname = DataHelper.GetNMIPropName(item);
-                switch (item)
-                {
-                    //TODO
-                    //case
-                }
+                
+                var stuff = DataHelper.GetPropertyName(() => nmiresponse.AuthCode).ToString();
+                //switch (item)
+                //{
+                //    case stuff:
+                //        break;
+                //}
             }
 
             return items;
+        }
+
+        public static List<string> GetObjProps<T>()
+        {
+            var props = typeof(T).GetProperties();
+            var names = new List<string>();
+
+            foreach(PropertyInfo prop in props)
+            {
+                names.Add(prop.Name);
+            }
+            return names;
         }
     }
 }

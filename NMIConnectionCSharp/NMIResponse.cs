@@ -8,7 +8,7 @@ namespace NMIConnectionCSharp
 {
     class NMIResponse
     {
-        public int Response { get; private set; }
+        public string Response { get; private set; }
         public string ResponseText { get; private set; }
         public string AuthCode { get; private set; }
         public string TransactionId { get; private set; }
@@ -18,11 +18,11 @@ namespace NMIConnectionCSharp
         public string Response_Code { get; private set; }
         public string Emv_Auth_Response_Data { get; set; }
         public NMIResponse()
-        {
+        {   
         }
         public NMIResponse(string response, string responsetext, string authcode, string transactionid, string avsresponse, string cvvresponse, string orderid, string response_code, string emv_auth_response_data)
         {
-            Response = int.Parse(response);
+            Response = response;
             ResponseText = responsetext;
             AuthCode = authcode;
             TransactionId = transactionid;
